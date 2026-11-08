@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 import requests
-from pyproj import Transformer
+from pyproj import Geod, Transformer
 from shapely.geometry import Point, shape
 from shapely.strtree import STRtree
 
@@ -44,6 +44,11 @@ LAYERS: dict[str, dict[str, str]] = {
         "dataset_id": "d_e7395d743076a2bcc487b0d12b9bf33b",
         "name": "SLA Cadastral Land Parcel",
         "file": "sla_cadastral.geojson",
+    },
+    "mrt": {
+        "dataset_id": "d_b39d3a0871985372d7e1637193335da5",
+        "name": "LTA MRT Station Exit (GEOJSON)",
+        "file": "lta_mrt_exits.geojson",
     },
 }
 
@@ -197,6 +202,7 @@ def enrich_street_stats(conn) -> int:
         points_by_street.setdefault(row["street_key"], []).append((row["x_svy21"], row["y_svy21"]))
 
     transformer = Transformer.from_crs("EPSG:3414", "EPSG:4326", always_xy=True)
+    geod = Geod(ellps="WGS84")
     now = db.now_iso()
     updates: list[tuple[Any, ...]] = []
     for row in rows:
@@ -222,6 +228,17 @@ def enrich_street_stats(conn) -> int:
         conservation = _first(indices["conservation"].lookup(point)) if indices["conservation"] else {}
         height = _first(indices["height"].lookup(point)) if indices["height"] else {}
         cadastral = _first(indices["cadastral"].lookup(point)) if indices["cadastral"] else {}
+        nearest_mrt: dict[str, Any] = {}
+        nearest_mrt_distance = None
+        if indices.get("mrt") and indices["mrt"].features:
+            nearest_index = indices["mrt"].tree.nearest(point)
+            if nearest_index is not None and nearest_index >= 0:
+                station_geometry = indices["mrt"].geometries[int(nearest_index)]
+                if station_geometry.geom_type == "Point":
+                    _, _, nearest_mrt_distance = geod.inv(
+                        lon, lat, station_geometry.x, station_geometry.y
+                    )
+                    nearest_mrt = indices["mrt"].features[int(nearest_index)].props
         lu_desc = land_use.get("LU_DESC")
         if str(lu_desc or "").upper() == "ROAD" and lha:
             lu_desc = "RESIDENTIAL (LHA)"
@@ -235,13 +252,17 @@ def enrich_street_stats(conn) -> int:
                 lha.get("TYPE"),
                 conservation.get("NAME"),
                 cadastral.get("LOT_KEY"),
+                nearest_mrt.get("STATION_NA"),
+                nearest_mrt.get("EXIT_CODE"),
+                nearest_mrt_distance,
                 now,
                 row["street_key"],
             )
         )
     conn.executemany(
         "UPDATE street_stats SET lu_desc=?, gpr=?, height_control=?, lha_class=?, "
-        "lha_name=?, lha_type=?, conservation_area=?, cadastral_lot=?, geo_updated_at=? "
+        "lha_name=?, lha_type=?, conservation_area=?, cadastral_lot=?, "
+        "nearest_mrt_name=?, nearest_mrt_exit=?, nearest_mrt_distance_m=?, geo_updated_at=? "
         "WHERE street_key=?",
         updates,
     )
@@ -252,7 +273,8 @@ def enrich_street_stats(conn) -> int:
 def street_geo(conn, street_key_value: str) -> dict[str, Any]:
     row = conn.execute(
         "SELECT street, lu_desc, gpr, height_control, lha_class, lha_name, lha_type, "
-        "conservation_area, cadastral_lot, geo_updated_at "
+        "conservation_area, cadastral_lot, nearest_mrt_name, nearest_mrt_exit, "
+        "nearest_mrt_distance_m, geo_updated_at "
         "FROM street_stats WHERE street_key = ? LIMIT 1",
         (street_key_value,),
     ).fetchone()

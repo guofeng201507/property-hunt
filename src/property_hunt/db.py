@@ -56,6 +56,9 @@ def init_db(conn: sqlite3.Connection) -> None:
         ("lha_type", "TEXT"),
         ("conservation_area", "TEXT"),
         ("cadastral_lot", "TEXT"),
+        ("nearest_mrt_name", "TEXT"),
+        ("nearest_mrt_exit", "TEXT"),
+        ("nearest_mrt_distance_m", "REAL"),
         ("geo_updated_at", "TEXT"),
     ):
         if name not in columns:

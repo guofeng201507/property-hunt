@@ -14,6 +14,7 @@ Personal Singapore landed property research tool. Local-first, SQLite + Streamli
 - URA 私宅成交、租赁合同、规划决定采集
 - SQLite 街道统计、sale/rent comps、yield、估值差
 - MP2025 Land Use / LHA / Conservation / Height + SLA 地籍富化
+- 最近 MRT 站点与直线距离（LTA MRT Station Exit）
 - 剩余 lease 风险提示与过滤
 - Streamlit 四个页面：收租筛选、估值差、Watchlist、规划信号
 - Watchlist 手动录入 + INLIS 尽调记录
@@ -121,6 +122,7 @@ make geo
 - MP2025 Conservation Area Boundary
 - MP2025 Building Height Control
 - SLA Cadastral Land Parcel
+- LTA MRT Station Exit
 
 首次约 330 MB，下载后存放在 `data/geo/`，该目录不进入 git。
 
@@ -153,8 +155,9 @@ http://127.0.0.1:8501
 ### 收租筛选
 
 - 选择 landed 类型、district、最少成交/租赁样本、最少剩余 lease
+- 可按 MRT 站名筛选，并设置最大直线距离；例如输入 `KEMBANGAN`
 - 按 gross yield 排序
-- 同时显示 land psf、lease left、zoning、GPR、LHA、conservation、confidence
+- 同时显示 land psf、lease left、zoning、GPR、LHA、conservation、MRT、confidence
 - **不要只看 yield**：短 lease 会制造高 yield 假象
 
 ### 估值差
@@ -225,6 +228,7 @@ due_diligence_list
 | Written Permission | URA Data Service | REST API，免费 |
 | MP2025 图层 | data.gov.sg / URA | GeoJSON 下载 |
 | SLA 地籍 | data.gov.sg / SLA | GeoJSON 下载 |
+| MRT 站出口 | data.gov.sg / LTA | GeoJSON 下载 |
 | 业主/地契/抵押/caveat | SLA INLIS | 网页按次付费，无公开 API |
 
 ## 数据口径与限制
@@ -235,6 +239,7 @@ due_diligence_list
 - **短 lease 会制造高 yield**：工具默认要求剩余 lease ≥40 年，可在页面调整。
 - **MP2025 是规划图层**：有地住宅实际可建体量还受 Envelope Control、Landed Housing Guidelines、保护区等约束，不能只看 GPR。
 - **地籍 lot 是近似定位**：街道级富化用成交点做 point-in-polygon，精确宗地/边界仍需 INLIS survey plan。
+- **MRT 距离是直线距离**：取最近 MRT 出口的直线距离，不是步行距离；实际步行可能因马路/河道绕行更长。
 - **不是投资建议**：所有 yield、discount、confidence 都是基于公开数据的估算，实际交易需律师、建筑师、估价师和 INLIS 尽调。
 
 ## 目录结构
@@ -244,7 +249,7 @@ property-hunt/
   data/
     fixtures/            # demo 数据
     raw/                 # URA 原始 Parquet 快照（gitignored）
-    geo/                 # MP2025/地籍 GeoJSON（gitignored）
+    geo/                 # MP2025/地籍/MRT GeoJSON（gitignored）
   db/
     property.db          # SQLite（gitignored）
   scripts/

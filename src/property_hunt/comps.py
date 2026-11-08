@@ -162,6 +162,8 @@ def list_street_stats(
     min_sale: int = 0,
     min_rent: int = 0,
     min_lease_remaining: int = 0,
+    mrt_station: str | None = None,
+    max_mrt_distance_m: float = 0,
     sort: str = "gross_yield_pct",
     limit: int = 100,
 ) -> list[dict[str, Any]]:
@@ -170,6 +172,12 @@ def list_street_stats(
     if min_lease_remaining > 0:
         where.append("(remaining_lease_years IS NULL OR remaining_lease_years >= ?)")
         params.append(min_lease_remaining)
+    if mrt_station:
+        where.append("nearest_mrt_name LIKE ?")
+        params.append(f"%{normalize.clean_text(mrt_station).upper()}%")
+    if max_mrt_distance_m > 0:
+        where.append("nearest_mrt_distance_m IS NOT NULL AND nearest_mrt_distance_m <= ?")
+        params.append(max_mrt_distance_m)
     if property_type:
         where.append("property_type = ?")
         params.append(normalize.normalize_property_type(property_type))
@@ -538,7 +546,8 @@ def value_gaps(
         "s.sale_p25_psf, s.sale_p75_psf, s.confidence, s.gross_yield_pct, "
         "s.remaining_lease_years AS comp_remaining_lease_years, "
         "s.lu_desc AS comp_zoning, s.lha_class AS comp_lha, "
-        "s.conservation_area AS comp_conservation "
+        "s.conservation_area AS comp_conservation, "
+        "s.nearest_mrt_name AS comp_mrt_name, s.nearest_mrt_distance_m AS comp_mrt_distance_m "
         "FROM ura_transactions t "
         "JOIN street_stats s ON t.street_key = s.street_key "
         "AND t.property_type = s.property_type "

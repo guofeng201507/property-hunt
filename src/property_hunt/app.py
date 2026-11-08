@@ -122,6 +122,11 @@ with tab_yield:
     with col4:
         min_rent = st.number_input("最少租赁样本（24m）", min_value=0, value=3, step=1)
     min_lease = st.slider("最少剩余 lease（年，freehold 不限）", min_value=0, max_value=99, value=40)
+    col5, col6 = st.columns(2)
+    with col5:
+        mrt_station = st.text_input("MRT station（可空，如 KEMBANGAN）", key="yield_mrt")
+    with col6:
+        max_mrt_distance = st.slider("离 MRT 最远（米，直线）", min_value=0, max_value=2000, value=0, step=50)
 
     conn = db.connect()
     try:
@@ -132,6 +137,8 @@ with tab_yield:
             min_sale=int(min_sale),
             min_rent=int(min_rent),
             min_lease_remaining=int(min_lease),
+            mrt_station=mrt_station.strip() or None,
+            max_mrt_distance_m=float(max_mrt_distance),
             sort="gross_yield_pct",
         )
     finally:
@@ -149,6 +156,8 @@ with tab_yield:
             "gpr": "GPR",
             "lha_class": "LHA",
             "conservation_area": "Conservation",
+            "nearest_mrt_name": "MRT",
+            "nearest_mrt_distance_m": "MRT m",
             "sale_count_36m": "Sales 36m",
             "sale_median_price": "Median price",
             "sale_median_psf": "Median land psf",
@@ -219,6 +228,8 @@ with tab_gap:
             "comp_zoning": "Zoning",
             "comp_lha": "LHA",
             "comp_conservation": "Conservation",
+            "comp_mrt_name": "MRT",
+            "comp_mrt_distance_m": "MRT m",
             "confidence": "Confidence",
             "risk_flags": "Risk flags",
         },
@@ -316,6 +327,12 @@ with tab_watchlist:
         g4.metric("LHA", geo_info.get("lha_class") or "—")
         g5.metric("Conservation", geo_info.get("conservation_area") or "—")
         g6.metric("Lot", geo_info.get("cadastral_lot") or "—")
+        if geo_info.get("nearest_mrt_name"):
+            st.caption(
+                f"Nearest MRT: {geo_info.get('nearest_mrt_name')} "
+                f"{geo_info.get('nearest_mrt_exit') or ''} · "
+                f"{geo_info.get('nearest_mrt_distance_m') or 0:.0f} m straight-line"
+            )
         col_a, col_b = st.columns(2)
         with col_a:
             st.markdown("**Sale comps**")

@@ -1,0 +1,65 @@
+{
+  "Status": "Success",
+  "Result": [
+    {
+      "project": "THOMSON RISE ESTATE",
+      "street": "JALAN BERJAYA",
+      "marketSegment": "RCR",
+      "x": "29360.4268",
+      "y": "37250.5129",
+      "transaction": [
+        {"contractDate": "0324", "area": "380", "price": "6800000", "propertyType": "Semi-detached", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "20", "noOfUnits": "1"},
+        {"contractDate": "0824", "area": "400", "price": "7200000", "propertyType": "Semi-detached", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "20", "noOfUnits": "1"},
+        {"contractDate": "0125", "area": "360", "price": "6300000", "propertyType": "Semi-detached", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "20", "noOfUnits": "1"},
+        {"contractDate": "0725", "area": "420", "price": "7800000", "propertyType": "Semi-detached", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "20", "noOfUnits": "1"},
+        {"contractDate": "0226", "area": "390", "price": "7000000", "propertyType": "Semi-detached", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "20", "noOfUnits": "1"},
+        {"contractDate": "0926", "area": "370", "price": "5800000", "propertyType": "Semi-detached", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "20", "noOfUnits": "1"}
+      ]
+    },
+    {
+      "project": "SUNSET WAY",
+      "street": "SUNSET WAY",
+      "marketSegment": "CCR",
+      "x": "25220.1200",
+      "y": "32680.4400",
+      "transaction": [
+        {"contractDate": "0424", "area": "220", "price": "4800000", "propertyType": "Terrace", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "10", "noOfUnits": "1"},
+        {"contractDate": "0924", "area": "240", "price": "5200000", "propertyType": "Terrace", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "10", "noOfUnits": "1"},
+        {"contractDate": "0225", "area": "200", "price": "4500000", "propertyType": "Terrace", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "10", "noOfUnits": "1"},
+        {"contractDate": "0625", "area": "260", "price": "5600000", "propertyType": "Terrace", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "10", "noOfUnits": "1"},
+        {"contractDate": "0126", "area": "230", "price": "5000000", "propertyType": "Terrace", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "10", "noOfUnits": "1"},
+        {"contractDate": "0726", "area": "210", "price": "4100000", "propertyType": "Terrace", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "10", "noOfUnits": "1"}
+      ]
+    },
+    {
+      "project": "COVE DRIVE",
+      "street": "COVE DRIVE",
+      "marketSegment": "CCR",
+      "x": "28392.5305",
+      "y": "24997.8217",
+      "transaction": [
+        {"contractDate": "0524", "area": "600", "price": "9800000", "propertyType": "Detached", "typeOfArea": "Land", "tenure": "99 yrs lease commencing from 2007", "floorRange": "-", "typeOfSale": "3", "district": "04", "noOfUnits": "1"},
+        {"contractDate": "1024", "area": "650", "price": "10500000", "propertyType": "Detached", "typeOfArea": "Land", "tenure": "99 yrs lease commencing from 2007", "floorRange": "-", "typeOfSale": "3", "district": "04", "noOfUnits": "1"},
+        {"contractDate": "0325", "area": "580", "price": "9200000", "propertyType": "Detached", "typeOfArea": "Land", "tenure": "99 yrs lease commencing from 2007", "floorRange": "-", "typeOfSale": "3", "district": "04", "noOfUnits": "1"},
+        {"contractDate": "0825", "area": "700", "price": "11200000", "propertyType": "Detached", "typeOfArea": "Land", "tenure": "99 yrs lease commencing from 2007", "floorRange": "-", "typeOfSale": "3", "district": "04", "noOfUnits": "1"},
+        {"contractDate": "1225", "area": "620", "price": "10000000", "propertyType": "Detached", "typeOfArea": "Land", "tenure": "99 yrs lease commencing from 2007", "floorRange": "-", "typeOfSale": "3", "district": "04", "noOfUnits": "1"},
+        {"contractDate": "0226", "area": "610", "price": "8600000", "propertyType": "Detached", "typeOfArea": "Land", "tenure": "99 yrs lease commencing from 2007", "floorRange": "-", "typeOfSale": "3", "district": "04", "noOfUnits": "1"}
+      ]
+    },
+    {
+      "project": "LORONG MARZUKI",
+      "street": "LORONG MARZUKI",
+      "marketSegment": "RCR",
+      "x": "34020.3300",
+      "y": "35510.2200",
+      "transaction": [
+        {"contractDate": "0224", "area": "180", "price": "3800000", "propertyType": "Terrace", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "15", "noOfUnits": "1"},
+        {"contractDate": "0724", "area": "200", "price": "4200000", "propertyType": "Terrace", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "15", "noOfUnits": "1"},
+        {"contractDate": "1124", "area": "190", "price": "4000000", "propertyType": "Terrace", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "15", "noOfUnits": "1"},
+        {"contractDate": "0425", "area": "210", "price": "4400000", "propertyType": "Terrace", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "15", "noOfUnits": "1"},
+        {"contractDate": "0126", "area": "185", "price": "3900000", "propertyType": "Terrace", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "15", "noOfUnits": "1"},
+        {"contractDate": "0926", "area": "195", "price": "3600000", "propertyType": "Terrace", "typeOfArea": "Land", "tenure": "Freehold", "floorRange": "-", "typeOfSale": "3", "district": "15", "noOfUnits": "1"}
+      ]
+    }
+  ]
+}

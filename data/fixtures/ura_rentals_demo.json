@@ -1,0 +1,57 @@
+{
+  "Status": "Success",
+  "Result": [
+    {
+      "project": "THOMSON RISE ESTATE",
+      "street": "JALAN BERJAYA",
+      "x": "29360.4268",
+      "y": "37250.5129",
+      "rental": [
+        {"leaseDate": "0525", "propertyType": "Semi-Detached House", "areaSqm": "260-300", "areaSqft": "2800-3200", "rent": 7500, "district": "20"},
+        {"leaseDate": "0925", "propertyType": "Semi-Detached House", "areaSqm": "300-340", "areaSqft": "3200-3600", "rent": 8000, "district": "20"},
+        {"leaseDate": "0126", "propertyType": "Semi-Detached House", "areaSqm": "260-300", "areaSqft": "2800-3200", "rent": 7800, "district": "20"},
+        {"leaseDate": "0526", "propertyType": "Semi-Detached House", "areaSqm": "240-280", "areaSqft": "2600-3000", "rent": 7200, "district": "20"},
+        {"leaseDate": "0826", "propertyType": "Semi-Detached House", "areaSqm": "280-320", "areaSqft": "3000-3400", "rent": 7900, "district": "20"}
+      ]
+    },
+    {
+      "project": "SUNSET WAY",
+      "street": "SUNSET WAY",
+      "x": "25220.1200",
+      "y": "32680.4400",
+      "rental": [
+        {"leaseDate": "0625", "propertyType": "Terrace House", "areaSqm": "180-220", "areaSqft": "1900-2300", "rent": 6500, "district": "10"},
+        {"leaseDate": "1025", "propertyType": "Terrace House", "areaSqm": "220-260", "areaSqft": "2300-2700", "rent": 7000, "district": "10"},
+        {"leaseDate": "0226", "propertyType": "Terrace House", "areaSqm": "200-240", "areaSqft": "2100-2500", "rent": 6800, "district": "10"},
+        {"leaseDate": "0626", "propertyType": "Terrace House", "areaSqm": "220-260", "areaSqft": "2300-2700", "rent": 6900, "district": "10"},
+        {"leaseDate": "0926", "propertyType": "Terrace House", "areaSqm": "200-240", "areaSqft": "2100-2500", "rent": 7100, "district": "10"}
+      ]
+    },
+    {
+      "project": "COVE DRIVE",
+      "street": "COVE DRIVE",
+      "x": "28392.5305",
+      "y": "24997.8217",
+      "rental": [
+        {"leaseDate": "0725", "propertyType": "Detached House", "areaSqm": "400-460", "areaSqft": "4300-4900", "rent": 12000, "district": "04"},
+        {"leaseDate": "1125", "propertyType": "Detached House", "areaSqm": "440-500", "areaSqft": "4700-5300", "rent": 13000, "district": "04"},
+        {"leaseDate": "0326", "propertyType": "Detached House", "areaSqm": "420-480", "areaSqft": "4500-5100", "rent": 12500, "district": "04"},
+        {"leaseDate": "0726", "propertyType": "Detached House", "areaSqm": "400-460", "areaSqft": "4300-4900", "rent": 12000, "district": "04"},
+        {"leaseDate": "1026", "propertyType": "Detached House", "areaSqm": "420-480", "areaSqft": "4500-5100", "rent": 12800, "district": "04"}
+      ]
+    },
+    {
+      "project": "LORONG MARZUKI",
+      "street": "LORONG MARZUKI",
+      "x": "34020.3300",
+      "y": "35510.2200",
+      "rental": [
+        {"leaseDate": "0525", "propertyType": "Terrace House", "areaSqm": "150-190", "areaSqft": "1600-2000", "rent": 5200, "district": "15"},
+        {"leaseDate": "0925", "propertyType": "Terrace House", "areaSqm": "170-210", "areaSqft": "1800-2200", "rent": 5500, "district": "15"},
+        {"leaseDate": "0126", "propertyType": "Terrace House", "areaSqm": "160-200", "areaSqft": "1700-2100", "rent": 5300, "district": "15"},
+        {"leaseDate": "0626", "propertyType": "Terrace House", "areaSqm": "180-220", "areaSqft": "1900-2300", "rent": 5600, "district": "15"},
+        {"leaseDate": "0926", "propertyType": "Terrace House", "areaSqm": "150-190", "areaSqft": "1600-2000", "rent": 5400, "district": "15"}
+      ]
+    }
+  ]
+}

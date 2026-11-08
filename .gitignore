@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+db/*.db
+db/*.db-*
+db/backup/
+data/raw/*.parquet
+data/geo/
+logs/
+.streamlit/
+.pytest_cache/

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "property-hunt": {
+      "command": "/Users/fengguo/property-hunt/.venv/bin/python",
+      "args": ["-m", "property_hunt.mcp_server"],
+      "env": {
+        "PROPERTY_HUNT_DB": "/Users/fengguo/property-hunt/db/property.db"
+      }
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "Status": "Success",
+  "Result": [
+    {
+      "dr_id": "90001",
+      "address": "15 JALAN BERJAYA",
+      "submission_desc": "PROPOSED ERECTION OF A 2-STOREY SEMI-DETACHED HOUSE WITH BASEMENT AND SWIMMING POOL",
+      "decision_date": "03/09/2026",
+      "decision_type": "Written Permission",
+      "appl_type": "New Erection",
+      "mkts_lotno": "TS20 01234A",
+      "decision_no": "P260901-01A1-Z000",
+      "submission_no": "260901-01A1-Z000",
+      "delete_ind": "No"
+    },
+    {
+      "dr_id": "90002",
+      "address": "21 JALAN BERJAYA",
+      "submission_desc": "PROPOSED AMALGAMATION AND SUBDIVISION OF LAND INTO 2 PLOTS AND ERECTION OF 2 SEMI-DETACHED HOUSES",
+      "decision_date": "18/08/2026",
+      "decision_type": "Written Permission",
+      "appl_type": "Subdivision",
+      "mkts_lotno": "TS20 01235B",
+      "decision_no": "P260818-02B2-Z000",
+      "submission_no": "260818-02B2-Z000",
+      "delete_ind": "No"
+    },
+    {
+      "dr_id": "90003",
+      "address": "8 SUNSET WAY",
+      "submission_desc": "PROPOSED RECONSTRUCTION OF AN EXISTING 2-STOREY TERRACE HOUSE",
+      "decision_date": "12/07/2026",
+      "decision_type": "Written Permission",
+      "appl_type": "Reconstruction",
+      "mkts_lotno": "TS10 00456C",
+      "decision_no": "P260712-03C3-Z000",
+      "submission_no": "260712-03C3-Z000",
+      "delete_ind": "No"
+    },
+    {
+      "dr_id": "90004",
+      "address": "30 LORONG MARZUKI",
+      "submission_desc": "PROPOSED SUBDIVISION OF LAND INTO 2 PLOTS AND ERECTION OF 2 TERRACE HOUSES",
+      "decision_date": "21/05/2026",
+      "decision_type": "Written Permission",
+      "appl_type": "Subdivision",
+      "mkts_lotno": "TS15 00789D",
+      "decision_no": "P260521-04D4-Z000",
+      "submission_no": "260521-04D4-Z000",
+      "delete_ind": "No"
+    },
+    {
+      "dr_id": "90005",
+      "address": "2 COVE DRIVE",
+      "submission_desc": "PROPOSED ADDITIONS AND ALTERATIONS TO AN EXISTING DETACHED HOUSE",
+      "decision_date": "06/03/2026",
+      "decision_type": "Written Permission",
+      "appl_type": "Additions and Alterations",
+      "mkts_lotno": "TS04 00123E",
+      "decision_no": "P260306-05E5-Z000",
+      "submission_no": "260306-05E5-Z000",
+      "delete_ind": "No"
+    },
+    {
+      "dr_id": "90006",
+      "address": "45 JALAN BERJAYA",
+      "submission_desc": "PROPOSED ERECTION OF A 2-STOREY DETACHED HOUSE",
+      "decision_date": "15/11/2025",
+      "decision_type": "Written Permission",
+      "appl_type": "New Erection",
+      "mkts_lotno": "TS20 01236F",
+      "decision_no": "P251115-06F6-Z000",
+      "submission_no": "251115-06F6-Z000",
+      "delete_ind": "No"
+    }
+  ]
+}

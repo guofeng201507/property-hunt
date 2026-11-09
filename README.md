@@ -20,6 +20,23 @@ Personal Singapore landed property research tool. Local-first, SQLite + Streamli
 - Watchlist 手动录入 + INLIS 尽调记录
 - MCP stdio server，可接入 Qoder / Codex
 
+## 功能总览
+
+| 模块 | 功能 |
+|---|---|
+| 数据采集 | 从 URA 拉取私宅成交、租赁合同、Written Permission；从 data.gov.sg 下载 MP2025 图层、SLA 地籍、LTA MRT 出口；本地 SQLite 存储，Parquet 保留原始快照 |
+| 市场统计 | 按街道 / 类型 / tenure / 面积段计算成交中位数、land psf、租金中位数、rent psf、gross yield、成交量、租赁样本量、流动性、confidence |
+| 收租筛选 | 面向半独立 / 排屋 / 独立式，按 yield、land psf、剩余 lease、MRT 距离、zoning、LHA 等筛选 |
+| 估值差 | 找出低于同街道 / 类型 / tenure / 面积段中位数的近期成交，显示折价、lease left、规划/地籍约束和 risk flags |
+| Watchlist | 手动录入正在看的房源，自动计算 comps、discount、估算租金和 gross yield；显示 MP2025 zoning、GPR、LHA、conservation、地籍 lot、最近 MRT |
+| 规划信号 | 查看 URA Written Permission 已批/已拒记录，筛选重建 / 分割 / 合并相关项目 |
+| 地理富化 | 用成交点做 point-in-polygon，给街道补齐 Land Use、GPR、Height、LHA、Conservation、SLA lot 和最近 MRT |
+| INLIS 尽调 | 生成 POI / PTI / PTIEI / PTICM / LP / CII 检查清单，记录每套房源的尽调结果和文件路径 |
+| MCP | 通过 stdio 暴露查询、估值、规划、watchlist、INLIS 工具，可接入 Qoder / Codex |
+| 数据模式 | demo 模式用内置样例跑通链路；live 模式用真实 URA 数据，demo/live 共用 SQLite，切换时需移走旧库 |
+
+这个工具**不做**：实时成交、自动抓取商业挂牌、全岛门牌级自动匹配、自动估值模型、投资建议。它做的是把公开官方数据整理成可查询的街道级研究底稿，再用 Watchlist + INLIS 对具体房源做人工核验。
+
 ## 环境要求
 
 - Python 3.11+

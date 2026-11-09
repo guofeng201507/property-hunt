@@ -197,6 +197,20 @@ http://127.0.0.1:8501
 - 可按街道和月份筛选
 - 可只看重建 / 分割 / 合并相关
 
+## 界面截图
+
+| 收租筛选（Kembangan） | 估值差 |
+|---|---|
+| ![](screenshots/01-rental-kembangan.png) | ![](screenshots/02-value-gap.png) |
+
+| Watchlist 汇总 | Watchlist Geo / Comps |
+|---|---|
+| ![](screenshots/03-watchlist-summary.png) | ![](screenshots/04-watchlist-geo.png) |
+
+| Watchlist INLIS 尽调 | 规划信号 |
+|---|---|
+| ![](screenshots/05-watchlist-inlis.png) | ![](screenshots/06-planning-signals.png) |
+
 ## MCP 接入
 
 配置示例在 `.mcp.json.example`：

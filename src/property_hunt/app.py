@@ -8,7 +8,7 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from property_hunt import comps, config, db, geo, ingest  # noqa: E402
+from property_hunt import comps, config, db, geo, ingest, normalize  # noqa: E402
 
 st.set_page_config(page_title="Property Hunt", layout="wide")
 
@@ -55,11 +55,98 @@ def refresh_stats() -> None:
         conn.close()
 
 
+def tenure_label(value: str | None) -> str:
+    return {
+        "FREEHOLD": "FH",
+        "LEASEHOLD_99": "99y",
+        "LEASEHOLD_999": "999y",
+        "LEASEHOLD_OTHER": "Lease",
+        "UNKNOWN": "—",
+    }.get(value or "", value or "—")
+
+
+def _is_missing(value: object) -> bool:
+    try:
+        return bool(pd.isna(value))
+    except (TypeError, ValueError):
+        return False
+
+
+def compact_zoning(value: str | None) -> str:
+    if _is_missing(value):
+        return "—"
+    text = str(value).upper()
+    if "RESIDENTIAL WITH COMMERCIAL" in text or "COMMERCIAL & RESIDENTIAL" in text:
+        return "Resi/Comm"
+    if "RESIDENTIAL" in text:
+        return "Resi"
+    if "COMMERCIAL" in text:
+        return "Comm"
+    return str(value)
+
+
+def compact_lha(value: str | None) -> str:
+    if _is_missing(value):
+        return "—"
+    text = str(value).upper()
+    if "GOOD CLASS" in text:
+        return "GCB"
+    if "LANDED" in text:
+        return "Landed"
+    return str(value)
+
+
+def compact_mrt(value: str | None) -> str:
+    if _is_missing(value):
+        return "—"
+    return str(value).replace(" MRT STATION", "").title()
+
+
 def dataframe(rows: list[dict], columns: dict[str, str] | None = None) -> None:
     if not rows:
         st.info("没有数据。检查筛选条件，或先运行 `make ingest` / `make geo`。")
         return
     frame = pd.DataFrame(rows)
+    if "property_type" in frame.columns:
+        frame["property_type"] = frame["property_type"].map(
+            lambda value: normalize.property_type_label(value) if value else value
+        )
+    if "tenure_type" in frame.columns:
+        frame["tenure_type"] = frame["tenure_type"].map(tenure_label)
+    for column in ("remaining_lease_years", "comp_remaining_lease_years"):
+        if column in frame.columns:
+            frame[column] = frame[column].map(
+                lambda value: "—" if pd.isna(value) else int(value)
+            )
+    for column in ("lu_desc", "comp_zoning"):
+        if column in frame.columns:
+            frame[column] = frame[column].map(compact_zoning)
+    for column in ("lha_class", "comp_lha"):
+        if column in frame.columns:
+            frame[column] = frame[column].map(compact_lha)
+    for column in ("nearest_mrt_name", "comp_mrt_name"):
+        if column in frame.columns:
+            frame[column] = frame[column].map(compact_mrt)
+    for column in (
+        "sale_median_psf", "sale_median_price", "psf", "comp_median_psf",
+        "rent_median", "rent_monthly", "area_sqft", "area_sqft_mid",
+        "nearest_mrt_distance_m", "comp_mrt_distance_m",
+    ):
+        if column in frame.columns:
+            frame[column] = pd.to_numeric(frame[column], errors="coerce").round(0)
+    for column in ("gross_yield_pct", "discount_pct"):
+        if column in frame.columns:
+            frame[column] = pd.to_numeric(frame[column], errors="coerce").round(2)
+    if "confidence" in frame.columns:
+        frame["confidence"] = frame["confidence"].map(
+            {"high": "High", "medium": "Med", "low": "Low"}
+        ).fillna(frame["confidence"])
+    if "risk_flags" in frame.columns:
+        frame["risk_flags"] = frame["risk_flags"].map(
+            lambda value: ", ".join(
+                str(item).replace("lease_remaining_", "Lease ") for item in value
+            ) if isinstance(value, list) else value
+        )
     if columns:
         frame = frame[[column for column in columns if column in frame.columns]].rename(columns=columns)
     st.dataframe(frame, width="stretch", hide_index=True)
@@ -150,23 +237,15 @@ with tab_yield:
             "street": "Street",
             "property_type": "Type",
             "tenure_type": "Tenure",
-            "remaining_lease_years": "Lease left",
-            "area_band": "Area band (sqft)",
-            "lu_desc": "Zoning",
-            "gpr": "GPR",
+            "remaining_lease_years": "Lease",
+            "area_band": "Area band",
             "lha_class": "LHA",
-            "conservation_area": "Conservation",
             "nearest_mrt_name": "MRT",
             "nearest_mrt_distance_m": "MRT m",
-            "sale_count_36m": "Sales 36m",
-            "sale_median_price": "Median price",
-            "sale_median_psf": "Median land psf",
-            "rent_count_24m": "Rents 24m",
-            "rent_median": "Median rent",
-            "rent_median_psf": "Rent psf",
-            "gross_yield_pct": "Gross yield %",
-            "liquidity_score": "Liquidity",
-            "confidence": "Confidence",
+            "sale_median_psf": "Land psf",
+            "rent_median": "Rent",
+            "gross_yield_pct": "Yield %",
+            "confidence": "Conf",
         },
     )
     if rows:
@@ -221,17 +300,12 @@ with tab_gap:
             "price": "Price",
             "area_sqft": "Land sqft",
             "psf": "Land psf",
-            "comp_median_psf": "Comp median psf",
-            "discount_pct": "Discount %",
-            "sale_count_36m": "Sales 36m",
-            "comp_remaining_lease_years": "Lease left",
-            "comp_zoning": "Zoning",
-            "comp_lha": "LHA",
-            "comp_conservation": "Conservation",
+            "comp_median_psf": "Comp psf",
+            "discount_pct": "Disc %",
+            "comp_remaining_lease_years": "Lease",
             "comp_mrt_name": "MRT",
-            "comp_mrt_distance_m": "MRT m",
-            "confidence": "Confidence",
-            "risk_flags": "Risk flags",
+            "confidence": "Conf",
+            "risk_flags": "Risk",
         },
     )
 
@@ -320,11 +394,12 @@ with tab_watchlist:
         )
         geo_info = brief.get("geo") or {}
         st.markdown("**Geo / Planning**")
-        g1, g2, g3, g4, g5, g6 = st.columns(6)
-        g1.metric("Zoning", geo_info.get("lu_desc") or "—")
+        g1, g2, g3 = st.columns(3)
+        g1.metric("Zoning", compact_zoning(geo_info.get("lu_desc")))
         g2.metric("GPR", geo_info.get("gpr") or "—")
-        g3.metric("Height", geo_info.get("height_control") or "—")
-        g4.metric("LHA", geo_info.get("lha_class") or "—")
+        g3.metric("LHA", compact_lha(geo_info.get("lha_class")))
+        g4, g5, g6 = st.columns(3)
+        g4.metric("Height", geo_info.get("height_control") or "—")
         g5.metric("Conservation", geo_info.get("conservation_area") or "—")
         g6.metric("Lot", geo_info.get("cadastral_lot") or "—")
         if geo_info.get("nearest_mrt_name"):
@@ -336,16 +411,43 @@ with tab_watchlist:
         col_a, col_b = st.columns(2)
         with col_a:
             st.markdown("**Sale comps**")
-            dataframe(brief["sale_comps"]["comps"])
+            dataframe(
+                brief["sale_comps"]["comps"],
+                {
+                    "contract_date": "Contract",
+                    "project": "Project",
+                    "tenure_type": "Tenure",
+                    "price": "Price",
+                    "area_sqft": "Land sqft",
+                    "psf": "Land psf",
+                },
+            )
         with col_b:
             st.markdown("**Rent comps**")
-            dataframe(brief["rent_comps"]["comps"])
+            dataframe(
+                brief["rent_comps"]["comps"],
+                {
+                    "lease_date": "Lease",
+                    "project": "Project",
+                    "rent_monthly": "Rent",
+                    "area_sqft_mid": "Sqft",
+                    "area_band": "Area band",
+                },
+            )
         st.markdown("**Planning signals**")
         dataframe(brief["planning_signals"])
         with st.expander("INLIS due diligence checklist"):
             st.json(brief["checklist"])
         with st.expander("INLIS 尽调记录"):
-            dataframe(brief["due_diligence"])
+            dataframe(
+                brief["due_diligence"],
+                {
+                    "product": "Product",
+                    "result": "Result",
+                    "checked_at": "Checked",
+                    "file_path": "File",
+                },
+            )
             with st.form("due_diligence_form", clear_on_submit=True):
                 dd_product = st.selectbox(
                     "Product",

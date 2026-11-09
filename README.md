@@ -199,17 +199,41 @@ http://127.0.0.1:8501
 
 ## 界面截图
 
-| 收租筛选（Kembangan） | 估值差 |
-|---|---|
-| ![](screenshots/01-rental-kembangan.png) | ![](screenshots/02-value-gap.png) |
+### 收租筛选（Kembangan MRT）
 
-| Watchlist 汇总 | Watchlist Geo / Comps |
-|---|---|
-| ![](screenshots/03-watchlist-summary.png) | ![](screenshots/04-watchlist-geo.png) |
+按 MRT 站名和直线距离筛选有地街道，同时显示 gross yield、land psf、剩余 lease、LHA 和最近 MRT。
 
-| Watchlist INLIS 尽调 | 规划信号 |
-|---|---|
-| ![](screenshots/05-watchlist-inlis.png) | ![](screenshots/06-planning-signals.png) |
+[![收租筛选](screenshots/01-rental-kembangan.png)](screenshots/01-rental-kembangan.png)
+
+### 估值差
+
+找出低于同街道 / 类型 / tenure / 面积段中位数的近期成交，显示折价、lease、最近 MRT、confidence 和 risk flags。
+
+[![估值差](screenshots/02-value-gap.png)](screenshots/02-value-gap.png)
+
+### Watchlist 汇总
+
+手动录入房源后自动计算 land psf、comp median、discount、估算租金和 gross yield。
+
+[![Watchlist 汇总](screenshots/03-watchlist-summary.png)](screenshots/03-watchlist-summary.png)
+
+### Watchlist Geo / Comps
+
+显示 MP2025 zoning、GPR、LHA、conservation、SLA lot、最近 MRT，以及 sale / rent comps。
+
+[![Watchlist Geo / Comps](screenshots/04-watchlist-geo.png)](screenshots/04-watchlist-geo.png)
+
+### Watchlist INLIS 尽调
+
+记录 POI / PTI / PTIEI / PTICM / LP / CII 等 INLIS 尽调结果和文件路径。
+
+[![Watchlist INLIS](screenshots/05-watchlist-inlis.png)](screenshots/05-watchlist-inlis.png)
+
+### 规划信号
+
+查看 URA Written Permission 已批/已拒记录，筛选重建 / 分割 / 合并相关项目。
+
+[![规划信号](screenshots/06-planning-signals.png)](screenshots/06-planning-signals.png)
 
 ## MCP 接入
 

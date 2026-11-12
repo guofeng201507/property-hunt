@@ -347,6 +347,8 @@ property-hunt/
 | MP2025 图层 | 宪报/修订时检查 |
 | 地籍 | 每月或需要时 |
 
+服务器部署后，`property-hunt-refresh.timer` 会每天 03:30 Asia/Singapore 自动刷新成交和规划；每月 16 日后补租赁。详见 [deploy/README.md](deploy/README.md)。
+
 ## 安全
 
 - `.env` 已在 `.gitignore` 中，不要提交 AccessKey。

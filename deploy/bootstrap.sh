@@ -80,6 +80,40 @@ PrivateTmp=true
 WantedBy=multi-user.target
 EOF
 
+cat >/etc/systemd/system/property-hunt-refresh.service <<EOF
+[Unit]
+Description=Property Hunt daily data refresh
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=property
+Group=property
+WorkingDirectory=$APP_DIR
+Environment=HOME=$APP_DIR
+Environment=PROPERTY_HUNT_DB=$APP_DIR/db/property.db
+Environment=PYTHONUNBUFFERED=1
+ExecStart=$APP_DIR/.venv/bin/python scripts/run_daily.py
+Nice=10
+IOSchedulingClass=best-effort
+TimeoutStartSec=1h
+EOF
+
+cat >/etc/systemd/system/property-hunt-refresh.timer <<'EOF'
+[Unit]
+Description=Run Property Hunt data refresh daily
+
+[Timer]
+OnCalendar=*-*-* 03:30:00
+Persistent=true
+RandomizedDelaySec=600
+Timezone=Asia/Singapore
+
+[Install]
+WantedBy=timers.target
+EOF
+
 echo "==> Writing Nginx site + Basic Auth"
 htpasswd -bc /etc/nginx/.htpasswd "$BASIC_AUTH_USER" "$BASIC_AUTH_PASS" >/dev/null
 
@@ -156,6 +190,8 @@ systemctl enable --now nginx
 systemctl reload nginx
 systemctl enable property-hunt
 systemctl restart property-hunt
+systemctl enable --now property-hunt-refresh.timer
+systemctl restart property-hunt-refresh.timer
 sleep 3
 
 if [ -n "$APP_DOMAIN" ] && [ -n "$LETSENCRYPT_EMAIL" ] && [ ! -f "/etc/letsencrypt/live/$APP_DOMAIN/fullchain.pem" ]; then
@@ -174,4 +210,5 @@ else
   curl -fsS -u "$BASIC_AUTH_USER:$BASIC_AUTH_PASS" -o /dev/null "http://127.0.0.1/" \
     && echo "Nginx HTTP auth check: OK"
 fi
+systemctl list-timers property-hunt-refresh.timer --no-pager | sed -n '1,3p'
 echo "Bootstrap complete."

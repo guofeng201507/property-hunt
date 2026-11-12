@@ -14,7 +14,10 @@ STREET_STATS_COLUMNS = [
     "sale_count_36m", "sale_count_12m", "sale_median_price", "sale_median_psf",
     "sale_p25_psf", "sale_p75_psf", "sale_last_date", "rent_count_24m",
     "rent_count_12m", "rent_median", "rent_median_psf", "rent_last_date",
-    "gross_yield_pct", "liquidity_score", "confidence", "updated_at",
+    "gross_yield_pct", "liquidity_score", "confidence",
+    "lu_desc", "gpr", "height_control", "lha_class", "lha_name", "lha_type",
+    "conservation_area", "cadastral_lot", "nearest_mrt_name", "nearest_mrt_exit",
+    "nearest_mrt_distance_m", "geo_updated_at", "updated_at",
 ]
 CATALYST_KEYWORDS = (
     "SUBDIVISION", "AMALGAMATION", "RECONSTRUCTION", "ERECTION",
@@ -141,6 +144,16 @@ def refresh_street_stats(conn: sqlite3.Connection) -> int:
         else "low"
         for sale_count, rent_count in zip(stats["sale_count_36m"], stats["rent_count_24m"])
     ]
+
+    existing_geo = pd.read_sql_query(
+        "SELECT street_key, property_type, tenure_type, area_band, "
+        "lu_desc, gpr, height_control, lha_class, lha_name, lha_type, "
+        "conservation_area, cadastral_lot, nearest_mrt_name, nearest_mrt_exit, "
+        "nearest_mrt_distance_m, geo_updated_at FROM street_stats",
+        conn,
+    )
+    geo_keys = ["street_key", "property_type", "tenure_type", "area_band"]
+    stats = stats.merge(existing_geo, on=geo_keys, how="left")
     stats["updated_at"] = db.now_iso()
     stats = stats[STREET_STATS_COLUMNS].astype(object).where(pd.notnull(stats[STREET_STATS_COLUMNS]), None)
 

@@ -93,16 +93,43 @@ active
 }
 ```
 
-## 5. 刷新数据
+## 5. 自动刷新
 
-当前 bootstrap 不自动加定时任务。手动刷新：
+bootstrap 会安装并启用：
+
+```text
+property-hunt-refresh.timer
+```
+
+默认每天 **03:30 Asia/Singapore** 执行一次：
+
+- 拉取 URA 成交（4 个 batch）
+- 拉取 URA 规划决定的最近一天增量
+- 每月 16 日后自动补一次租赁合同（最近 8 个季度）
+- 重算街道统计
+- 默认跳过重型 geo 富化，避免 1.6GB 内存机器 OOM
+
+查看状态：
+
+```bash
+systemctl list-timers property-hunt-refresh.timer
+journalctl -u property-hunt-refresh.service -n 100
+```
+
+手动触发一次：
+
+```bash
+systemctl start property-hunt-refresh.service
+```
+
+如果需要连同 MP2025/地籍/MRT 一起重算：
 
 ```bash
 ssh -i "$SSH_KEY" "$DEPLOY_USER@$DEPLOY_HOST" \
-  'cd /opt/property-hunt && .venv/bin/python scripts/run_ingest.py --mode live --dataset planning'
+  'cd /opt/property-hunt && .venv/bin/python scripts/run_daily.py --with-geo'
 ```
 
-注意：`run_ingest.py` 在 geo 图层存在时会重新做空间富化，1.6GB 内存的机器建议低峰期执行，或先在本地刷新 DB 后再跑 `./deploy/deploy.sh` 同步。
+`--with-geo` 会加载 300MB+ GeoJSON，1.6GB 内存机器建议低峰期执行。
 
 ## 6. HTTPS
 

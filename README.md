@@ -166,6 +166,20 @@ http://127.0.0.1:8501
 | `make app` | 启动 Streamlit |
 | `make mcp` | 启动 MCP stdio server |
 | `make test` | 运行测试 |
+| `make deploy` | 按 `deploy/.deploy.env` 部署到服务器 |
+
+## 部署到服务器
+
+部署脚本在 `deploy/`：
+
+```bash
+cp deploy/.deploy.env.example deploy/.deploy.env
+chmod 600 deploy/.deploy.env
+# 编辑 DEPLOY_HOST / SSH_KEY / BASIC_AUTH_PASS
+make deploy
+```
+
+脚本会同步 SQLite、`.env`、MP2025/地籍/MRT 图层到服务器，并配置 systemd、Nginx 反代和 Basic Auth。详见 [deploy/README.md](deploy/README.md)。
 
 ## 页面说明
 

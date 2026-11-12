@@ -3,6 +3,8 @@ __pycache__/
 *.pyc
 .DS_Store
 .env
+deploy/.deploy.env
+deploy/*.local.env
 db/*.db
 db/*.db-*
 db/backup/

@@ -1,4 +1,4 @@
-.PHONY: setup demo ingest geo app mcp test
+.PHONY: setup demo ingest geo app mcp test deploy
 
 setup:
 	uv sync --extra dev
@@ -20,3 +20,6 @@ mcp:
 
 test:
 	uv run pytest -q
+
+deploy:
+	./deploy/deploy.sh

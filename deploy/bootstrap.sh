@@ -3,6 +3,8 @@ set -euo pipefail
 
 : "${APP_DIR:=/opt/property-hunt}"
 : "${REPO_URL:=https://github.com/guofeng201507/property-hunt.git}"
+: "${APP_DOMAIN:=}"
+: "${LETSENCRYPT_EMAIL:=}"
 : "${BASIC_AUTH_USER:?BASIC_AUTH_USER is required}"
 : "${BASIC_AUTH_PASS:?BASIC_AUTH_PASS is required}"
 
@@ -14,7 +16,8 @@ fi
 echo "==> Installing system packages"
 apt-get update -y
 DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  nginx apache2-utils rsync git python3 python3-venv python3-pip ca-certificates curl
+  nginx apache2-utils rsync git python3 python3-venv python3-pip ca-certificates curl \
+  certbot python3-certbot-nginx
 
 echo "==> Ensuring 2GB swap"
 if ! swapon --show | grep -q '/swapfile'; then
@@ -79,11 +82,25 @@ EOF
 
 echo "==> Writing Nginx site + Basic Auth"
 htpasswd -bc /etc/nginx/.htpasswd "$BASIC_AUTH_USER" "$BASIC_AUTH_PASS" >/dev/null
-cat >/etc/nginx/sites-available/property-hunt <<EOF
+
+if [ -n "$APP_DOMAIN" ] && [ -f "/etc/letsencrypt/live/$APP_DOMAIN/fullchain.pem" ]; then
+  cat >/etc/nginx/sites-available/property-hunt <<EOF
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
-    server_name _;
+    server_name $APP_DOMAIN;
+    return 301 https://$APP_DOMAIN\$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name $APP_DOMAIN;
+
+    ssl_certificate /etc/letsencrypt/live/$APP_DOMAIN/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$APP_DOMAIN/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     auth_basic "Property Hunt";
     auth_basic_user_file /etc/nginx/.htpasswd;
@@ -103,6 +120,32 @@ server {
     }
 }
 EOF
+else
+  cat >/etc/nginx/sites-available/property-hunt <<EOF
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name ${APP_DOMAIN:-_};
+
+    auth_basic "Property Hunt";
+    auth_basic_user_file /etc/nginx/.htpasswd;
+    client_max_body_size 20m;
+
+    location / {
+        proxy_pass http://127.0.0.1:8501;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_read_timeout 86400;
+        proxy_buffering off;
+    }
+}
+EOF
+fi
 rm -f /etc/nginx/sites-enabled/default
 ln -sf /etc/nginx/sites-available/property-hunt /etc/nginx/sites-enabled/property-hunt
 nginx -t
@@ -115,7 +158,20 @@ systemctl enable property-hunt
 systemctl restart property-hunt
 sleep 3
 
+if [ -n "$APP_DOMAIN" ] && [ -n "$LETSENCRYPT_EMAIL" ] && [ ! -f "/etc/letsencrypt/live/$APP_DOMAIN/fullchain.pem" ]; then
+  echo "==> Requesting Let's Encrypt certificate"
+  certbot --nginx -d "$APP_DOMAIN" --non-interactive --agree-tos -m "$LETSENCRYPT_EMAIL" --redirect
+  nginx -t
+  systemctl reload nginx
+fi
+
 systemctl is-active property-hunt
 curl -fsS -o /dev/null "http://127.0.0.1:8501" && echo "Streamlit local check: OK"
-curl -fsS -u "$BASIC_AUTH_USER:$BASIC_AUTH_PASS" -o /dev/null "http://127.0.0.1/" && echo "Nginx auth check: OK"
+if [ -n "$APP_DOMAIN" ] && [ -f "/etc/letsencrypt/live/$APP_DOMAIN/fullchain.pem" ]; then
+  curl -fsS -u "$BASIC_AUTH_USER:$BASIC_AUTH_PASS" -o /dev/null "https://$APP_DOMAIN/" \
+    && echo "Nginx HTTPS auth check: OK"
+else
+  curl -fsS -u "$BASIC_AUTH_USER:$BASIC_AUTH_PASS" -o /dev/null "http://127.0.0.1/" \
+    && echo "Nginx HTTP auth check: OK"
+fi
 echo "Bootstrap complete."

@@ -179,7 +179,7 @@ chmod 600 deploy/.deploy.env
 make deploy
 ```
 
-脚本会同步 SQLite、`.env`、MP2025/地籍/MRT 图层到服务器，并配置 systemd、Nginx 反代和 Basic Auth。详见 [deploy/README.md](deploy/README.md)。
+脚本会同步 SQLite、`.env`、MP2025/地籍/MRT 图层到服务器，并配置 systemd、Nginx 反代和 Basic Auth。设置 `APP_DOMAIN` / `LETSENCRYPT_EMAIL` 后会自动配置 HTTPS。详见 [deploy/README.md](deploy/README.md)。
 
 ## 页面说明
 

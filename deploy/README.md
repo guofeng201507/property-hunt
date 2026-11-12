@@ -17,9 +17,13 @@ DEPLOY_USER=root
 SSH_KEY=/absolute/path/to/your-key.pem
 APP_DIR=/opt/property-hunt
 REPO_URL=https://github.com/guofeng201507/property-hunt.git
+APP_DOMAIN=properties.example.com
+LETSENCRYPT_EMAIL=you@example.com
 BASIC_AUTH_USER=feng
 BASIC_AUTH_PASS=change-me-to-a-long-random-password
 ```
+
+`APP_DOMAIN` 和 `LETSENCRYPT_EMAIL` 可选。填了之后 bootstrap 会自动用 Certbot 申请 Let's Encrypt 证书并配置 HTTPS。DNS 的 A 记录必须指向 `DEPLOY_HOST`，安全组需要放行 80 和 443。
 
 `deploy/.deploy.env` 已在 `.gitignore` 中，不会提交。
 
@@ -102,7 +106,20 @@ ssh -i "$SSH_KEY" "$DEPLOY_USER@$DEPLOY_HOST" \
 
 ## 6. HTTPS
 
-当前脚本配置的是 HTTP + Basic Auth。要上 HTTPS，需要提供域名并把 DNS 指向服务器，然后加 Caddy/Let's Encrypt（或 Nginx + certbot）。
+在 `deploy/.deploy.env` 中设置：
+
+```bash
+APP_DOMAIN=properties.example.com
+LETSENCRYPT_EMAIL=you@example.com
+```
+
+确保：
+
+- 域名 A 记录指向 `DEPLOY_HOST`
+- 阿里云安全组放行 80 和 443
+- `deploy/.deploy.env` 权限为 600
+
+bootstrap 首次部署会先写 HTTP 配置，再运行 `certbot --nginx` 申请证书；后续部署如果检测到证书已存在，会直接写 HTTPS 配置，不会把 SSL 覆盖掉。Certbot 会自动安装续期 timer。
 
 ## 文件
 

@@ -15,6 +15,8 @@ fi
 : "${DEPLOY_USER:=root}"
 : "${APP_DIR:=/opt/property-hunt}"
 : "${REPO_URL:=https://github.com/guofeng201507/property-hunt.git}"
+: "${APP_DOMAIN:=}"
+: "${LETSENCRYPT_EMAIL:=}"
 : "${BASIC_AUTH_USER:?Set BASIC_AUTH_USER in deploy/.deploy.env}"
 : "${BASIC_AUTH_PASS:?Set BASIC_AUTH_PASS in deploy/.deploy.env}"
 : "${SSH_KEY:?Set SSH_KEY in deploy/.deploy.env}"
@@ -68,11 +70,16 @@ fi
 
 echo "==> Running server bootstrap"
 ssh "${SSH_OPTS[@]}" "$REMOTE" \
-  "APP_DIR='$APP_DIR' REPO_URL='$REPO_URL' BASIC_AUTH_USER='$BASIC_AUTH_USER' BASIC_AUTH_PASS='$BASIC_AUTH_PASS' bash -s" \
+  "APP_DIR='$APP_DIR' REPO_URL='$REPO_URL' APP_DOMAIN='$APP_DOMAIN' LETSENCRYPT_EMAIL='$LETSENCRYPT_EMAIL' BASIC_AUTH_USER='$BASIC_AUTH_USER' BASIC_AUTH_PASS='$BASIC_AUTH_PASS' bash -s" \
   < "$ROOT_DIR/deploy/bootstrap.sh"
 
 echo "==> Public check"
-curl -fsS -u "$BASIC_AUTH_USER:$BASIC_AUTH_PASS" -o /dev/null "http://$DEPLOY_HOST/" \
-  && echo "OK: http://$DEPLOY_HOST/ (Basic Auth user: $BASIC_AUTH_USER)"
+SCHEME="http"
+if [ -n "$APP_DOMAIN" ] && [ -n "$LETSENCRYPT_EMAIL" ]; then
+  SCHEME="https"
+fi
+CHECK_HOST="${APP_DOMAIN:-$DEPLOY_HOST}"
+curl -fsS -u "$BASIC_AUTH_USER:$BASIC_AUTH_PASS" -o /dev/null "$SCHEME://$CHECK_HOST/" \
+  && echo "OK: $SCHEME://$CHECK_HOST/ (Basic Auth user: $BASIC_AUTH_USER)"
 
 echo "Done."

@@ -155,6 +155,46 @@ make app
 http://127.0.0.1:8501
 ```
 
+## Development（开发）
+
+面向贡献者的最小开发闭环：环境 → 安装 → 测试 → 本地运行入口。
+
+### 环境要求
+
+- Python 3.11+
+- [uv](https://docs.astral.sh/uv/)
+
+跑测试和 demo 都不需要 URA AccessKey；只有 live 数据采集需要（见上文「快速开始」）。
+
+### 安装依赖
+
+```bash
+uv sync --extra dev
+```
+
+等价于 `make setup`：在 `.venv/` 安装运行依赖与 `dev` extra（当前为 `pytest`）。
+
+### 运行测试
+
+```bash
+uv run pytest -q
+```
+
+等价于 `make test`，运行 `tests/` 下的离线测试套件（基于 demo fixtures 和纯函数），无需网络或 AccessKey。
+
+### 本地运行入口
+
+| 命令 | 用途 | 等价命令 |
+|---|---|---|
+| `make demo` | 加载内置 demo 样例数据，填充 `db/property.db`，无需 AccessKey 即可体验 | `uv run python scripts/run_ingest.py --mode demo` |
+| `make app` | 启动 Streamlit 看板，默认地址 `http://127.0.0.1:8501` | `uv run streamlit run src/property_hunt/app.py` |
+| `make mcp` | 启动 MCP stdio server，供 Qoder / Codex 等客户端接入 | `uv run python -m property_hunt.mcp_server` |
+
+说明：
+
+- `make demo` 与 `make app` 相互独立；看板不强制先跑 demo，但库里没有数据时页面为空。demo 与 live 共用 `db/property.db`，切到 live 前需先移走 demo 库，见上文「快速开始」。
+- `make mcp` 是阻塞式 stdio 进程，由 MCP 客户端启动或前台常驻；stdout 只走协议，日志写 stderr，不要额外 `print`。
+
 ## 常用命令
 
 | 命令 | 作用 |
